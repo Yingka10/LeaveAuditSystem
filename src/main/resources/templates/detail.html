@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>假單詳細內容</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        
+        /* 頂部導覽列樣式 (與列表頁一致) */
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid #eee; 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+        }
+        .logout-btn { 
+            background-color: #6c757d; 
+            color: white; 
+            padding: 5px 10px; 
+            text-decoration: none; 
+            border-radius: 4px; 
+            font-size: 0.9em;
+        }
+
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+        .row { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        .actions { margin-top: 20px; text-align: center; }
+        button { padding: 10px 20px; margin: 0 10px; cursor: pointer; border: none; color: white; border-radius: 5px;}
+        .approve { background-color: #28a745; }
+        .reject { background-color: #dc3545; }
+        .back { background-color: #6c757d; text-decoration: none; padding: 10px 20px; color: white; border-radius: 5px; display: inline-block;}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h3>系統後台</h3>
+        <a href="/logout" class="logout-btn">登出</a>
+    </div>
+
+    <div class="card">
+        <h2 style="text-align: center;">假單詳情</h2>
+        <div class="row"><label>單號：</label><span th:text="${leave.id}"></span></div>
+        <div class="row"><label>學生姓名：</label><span th:text="${leave.studentName}"></span> (<span th:text="${leave.studentId}"></span>)</div>
+        <div class="row"><label>假別：</label><span th:text="${leave.type}"></span></div>
+        <div class="row"><label>日期：</label><span th:text="${leave.date}"></span></div>
+        <div class="row"><label>事由：</label><span th:text="${leave.reason}"></span></div>
+        <div class="row"><label>目前狀態：</label><span th:text="${leave.status}" style="font-weight:bold;"></span></div>
+
+        <div class="actions">
+            <form th:if="${leave.status == '待審核'}" th:action="@{/leaves/{id}/audit(id=${leave.id})}" method="post" style="display: inline;">
+                <button type="submit" name="action" value="approve" class="approve">通過</button>
+                <button type="submit" name="action" value="reject" class="reject">不通過</button>
+            </form>
+            <br><br>
+            <a href="/leaves" class="back">返回列表</a>
+        </div>
+    </div>
+</body>
+</html>

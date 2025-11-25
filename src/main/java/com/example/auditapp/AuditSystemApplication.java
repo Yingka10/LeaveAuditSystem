@@ -1,11 +1,11 @@
-package com.example.leaveapp;
+package com.example.auditapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LeaveApplication {
+public class AuditSystemApplication {
     public static void main(String[] args) {
-        SpringApplication.run(LeaveApplication.class, args);
+        SpringApplication.run(AuditSystemApplication.class, args);
     }
 }

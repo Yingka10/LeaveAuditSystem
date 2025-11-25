@@ -1,6 +1,6 @@
-package com.example.leaveapp;
+package com.example.auditapp;
 
-public class LeaveRequest {
+public class StudentLeaveForm {
     private String id;
     private String studentName;
     private String studentId;
@@ -10,7 +10,7 @@ public class LeaveRequest {
     private String status; // 待審核, 通過, 不通過
     private String email;
 
-public LeaveRequest(String id, String studentName, String studentId, String type, String date, String reason, String status, String email) {
+public StudentLeaveForm(String id, String studentName, String studentId, String type, String date, String reason, String status, String email) {
         this.id = id;
         this.studentName = studentName;
         this.studentId = studentId;

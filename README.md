@@ -2,7 +2,7 @@
 
 ## 專案簡介
 本系統為「系統分析與設計」課程期末專題實作。
-這是一個基於 Web 的請假管理系統，提供導師進行線上假單審核。系統具備自動化流程，包含審核通過/駁回後的 Email 通知功能，以及完整的後台審核紀錄 (Audit Log)。
+這是一個基於 Web 的請假管理系統，提供導師進行線上假單審核。系統具備自動化流程，包含審核通過/駁回後的 Email 通知功能，以及完整的後台審核紀錄 (Audit Record)。
 
 ## 系統架構
 * **後端語言**：Java (JDK 17)
@@ -27,7 +27,7 @@
 開啟終端機 (Terminal)，執行以下指令將專案 Clone 至本地：
 ```bash
 git clone https://github.com/Yingka10/LeaveSystem.git
-cd LeaveSystem
+cd LeaveAuditSystem
 ````
 
 ### 2\. 設定 Email 功能
@@ -40,9 +40,9 @@ cd LeaveSystem
 
 ### 3\. 如何執行
 
-1.  使用 **VS Code** 開啟 `LeaveSystem` 資料夾。
+1.  使用 **VS Code** 開啟 `LeaveAuditSystem` 資料夾。
 2.  等待 Maven 自動下載依賴套件。
-3.  打開 `src/main/java/com/example/leaveapp/LeaveApplication.java`。
+3.  打開 `src/main/java/com/example/auditapp/AuditSystemApplication.java`。
 4.  點擊程式碼上方的 **Run** 按鈕。
 5.  等待終端機出現 `Tomcat started on port 8080` 字樣。
 

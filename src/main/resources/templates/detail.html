@@ -3,31 +3,33 @@
 <head>
     <title>假單詳細內容</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        body { font-family: "Microsoft JhengHei", sans-serif; padding: 20px; max-width: 900px; margin: auto; background-color: #f9f9f9; }
         
-        /* 頂部導覽列樣式 (與列表頁一致) */
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 2px solid #eee; 
-            padding-bottom: 10px; 
-            margin-bottom: 20px; 
-        }
-        .logout-btn { 
-            background-color: #6c757d; 
-            color: white; 
-            padding: 5px 10px; 
-            text-decoration: none; 
-            border-radius: 4px; 
-            font-size: 0.9em;
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
+        .logout-btn { background-color: #6c757d; color: white; padding: 5px 10px; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
 
-        .card { border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-        .row { margin-bottom: 15px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        .actions { margin-top: 20px; text-align: center; }
-        button { padding: 10px 20px; margin: 0 10px; cursor: pointer; border: none; color: white; border-radius: 5px;}
+        .card { background: white; border: 1px solid #ddd; padding: 25px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* 表單區域樣式 (模仿截圖) */
+        .section-title { font-weight: bold; font-size: 1.1em; margin-top: 20px; margin-bottom: 10px; color: #333; border-left: 4px solid #5F9EA0; padding-left: 10px;}
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .info-item label { font-weight: bold; color: #555; display: block; font-size: 0.9em;}
+        .info-item span { color: #000; font-size: 1.1em; }
+
+        /* 課表樣式 */
+        .schedule-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .schedule-table th { background-color: #D1E9E9; color: #333; padding: 10px; border: 1px solid #ccc; text-align: left;} /* 模仿截圖的淺藍色 */
+        .schedule-table td { padding: 10px; border: 1px solid #eee; }
+
+        /* 檔案區塊樣式 */
+        .file-box { border: 1px solid #ddd; padding: 15px; border-radius: 4px; background-color: #fafafa; display: flex; align-items: center; justify-content: space-between;}
+        .file-box.required { border-left: 3px solid #d9534f; } /* 必填項標示紅色 */
+        .file-link { color: #007bff; text-decoration: none; font-weight: bold; display: flex; align-items: center;}
+        .file-link:hover { text-decoration: underline; }
+        .no-file { color: #999; font-style: italic; }
+
+        .actions { margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px solid #eee;}
+        button { padding: 10px 30px; margin: 0 10px; cursor: pointer; border: none; color: white; border-radius: 5px; font-size: 1em;}
         .approve { background-color: #28a745; }
         .reject { background-color: #dc3545; }
         .back { background-color: #6c757d; text-decoration: none; padding: 10px 20px; color: white; border-radius: 5px; display: inline-block;}
@@ -35,23 +37,71 @@
 </head>
 <body>
     <div class="header">
-        <h3>系統後台</h3>
+        <h3>系統後台 - 詳細審核</h3>
         <a href="/logout" class="logout-btn">登出</a>
     </div>
 
     <div class="card">
-        <h2 style="text-align: center;">假單詳情</h2>
-        <div class="row"><label>單號：</label><span th:text="${leave.id}"></span></div>
-        <div class="row"><label>學生姓名：</label><span th:text="${leave.studentName}"></span> (<span th:text="${leave.studentId}"></span>)</div>
-        <div class="row"><label>假別：</label><span th:text="${leave.type}"></span></div>
-        <div class="row"><label>日期：</label><span th:text="${leave.date}"></span></div>
-        <div class="row"><label>事由：</label><span th:text="${leave.reason}"></span></div>
-        <div class="row"><label>目前狀態：</label><span th:text="${leave.status}" style="font-weight:bold;"></span></div>
+        <div class="info-grid">
+            <div class="info-item"><label>單號</label><span th:text="${leave.id}"></span></div>
+            <div class="info-item"><label>目前狀態</label><span th:text="${leave.status}" style="color:red; font-weight:bold;"></span></div>
+            <div class="info-item"><label>學生姓名</label><span th:text="${leave.studentName}"></span></div>
+            <div class="info-item"><label>學號</label><span th:text="${leave.studentId}"></span></div>
+            <div class="info-item"><label>假別</label><span th:text="${leave.type}"></span></div>
+            <div class="info-item"><label>Email</label><span th:text="${leave.email}"></span></div>
+        </div>
+
+        <div class="section-title">請假事由</div>
+        <div style="padding: 10px; background: #eee; border-radius: 4px;" th:text="${leave.reason}"></div>
+
+        <div class="section-title">證明文件 (選填)</div>
+        <div class="file-box">
+            <div th:if="${leave.evidenceFile != null}">
+                <a th:href="${leave.evidenceFile}" target="_blank" class="file-link">
+                    預覽檔案
+                </a>
+            </div>
+            <div th:if="${leave.evidenceFile == null}" class="no-file">未上傳任何檔案</div>
+        </div>
+
+        <div class="section-title">請假節次</div>
+        <table class="schedule-table">
+            <thead>
+                <tr>
+                    <th>日期</th>
+                    <th>星期</th>
+                    <th>節次</th>
+                    <th>課程</th>
+                    <th>授課老師</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${leave.schedule}">
+                    <td th:text="${item.date}"></td>
+                    <td th:text="${item.day}"></td>
+                    <td th:text="${item.period}"></td>
+                    <td th:text="${item.course}"></td>
+                    <td th:text="${item.teacher}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="section-title">已預先向任課教師請假 [證明文件] (必填)</div>
+        <div class="file-box required">
+            <div th:if="${leave.teacherConsentFile != null}">
+                <a th:href="${leave.teacherConsentFile}" target="_blank" class="file-link">
+                    預覽檔案
+                </a>
+            </div>
+            <div th:if="${leave.teacherConsentFile == null}" style="color: red; font-weight: bold;">
+                ⚠️ 警告：學生未上傳必備證明
+            </div>
+        </div>
 
         <div class="actions">
             <form th:if="${leave.status == '待審核'}" th:action="@{/leaves/{id}/audit(id=${leave.id})}" method="post" style="display: inline;">
-                <button type="submit" name="action" value="approve" class="approve">通過</button>
-                <button type="submit" name="action" value="reject" class="reject">不通過</button>
+                <button type="submit" name="action" value="approve" class="approve">通過審核</button>
+                <button type="submit" name="action" value="reject" class="reject">駁回申請</button>
             </form>
             <br><br>
             <a href="/leaves" class="back">返回列表</a>

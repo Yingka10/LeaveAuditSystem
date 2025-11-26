@@ -3,14 +3,14 @@ package com.example.auditapp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class AuditRecord {
+public class AuditLog {
     private String leaveId;
     private String studentName;
     private String action; // "核准" 或 "駁回"
     private String operator; // 操作者 (Teacher)
     private String timestamp;
 
-    public AuditRecord(String leaveId, String studentName, String action, String operator) {
+    public AuditLog(String leaveId, String studentName, String action, String operator) {
         this.leaveId = leaveId;
         this.studentName = studentName;
         this.action = action;

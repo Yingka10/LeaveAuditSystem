@@ -18,7 +18,7 @@
         .btn-blue { background: #007bff; text-decoration: none; display: inline-block;}
         .btn-green { background: #28a745; }
         .btn-red { background: #dc3545; }
-        .btn-info { background: #17a2b8; } /* 新按鈕顏色 */
+        .btn-info { background: #17a2b8; }
         .toolbar { margin-bottom: 15px; background: #f8f9fa; padding: 15px; border-radius: 5px;}
     </style>
     <script>
@@ -43,10 +43,10 @@
     <form action="/leaves/batch" method="post">
         <div class="toolbar">
             <span style="font-weight:bold; margin-right: 10px;">批次操作:</span>
-            <button type="submit" name="action" value="review" class="btn btn-info">檢視選取假單並審核</button>
+            <button type="submit" name="action" value="review" class="btn btn-info">🔍 檢視選取明細並審核</button>
             <span style="border-left: 2px solid #ccc; margin: 0 10px;"></span>
-            <button type="submit" name="action" value="approve" class="btn btn-green">全部通過</button>
-            <button type="submit" name="action" value="reject" class="btn btn-red">全部不通過</button>
+            <button type="submit" name="action" value="approve" class="btn btn-green">直接全部通過</button>
+            <button type="submit" name="action" value="reject" class="btn btn-red">直接全部不通過</button>
         </div>
 
         <table>
@@ -59,8 +59,7 @@
                     <th>學號</th>
                     <th>姓名</th>
                     <th>假別</th>
-                    <th>日期</th>
-                    <th>狀態</th>
+                    <th>日期</th> <th>狀態</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -73,7 +72,9 @@
                     <td th:text="${leave.studentId}"></td>
                     <td th:text="${leave.studentName}"></td>
                     <td th:text="${leave.type}"></td>
-                    <td th:text="${leave.date}"></td>
+                    
+                    <td th:text="${leave.dateSummary}"></td>
+                    
                     <td th:class="'status-' + ${leave.status}" th:text="${leave.status}"></td>
                     <td>
                         <a th:href="@{/leaves/{id}(id=${leave.id})}" class="btn btn-blue">詳細</a>

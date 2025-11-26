@@ -18,12 +18,34 @@ public class TeacherAuditController {
 
     private static List<StudentLeaveForm> leaveDb = new ArrayList<>();
     // 新增：存放審核紀錄的 List
-    private static List<AuditRecord> auditLogs = new ArrayList<>();
+    private static List<AuditLog> auditRecords = new ArrayList<>();
 
     static {
-        leaveDb.add(new StudentLeaveForm("L001", "周佳穎", "112403508", "事假", "2025-12-01", "家裡有事", "待審核", "jjjj65034666@gmail.com"));
-        leaveDb.add(new StudentLeaveForm("L002", "王小明", "112400001", "病假", "2025-12-02", "感冒發燒", "待審核", "test2@example.com"));
-        leaveDb.add(new StudentLeaveForm("L003", "陳大文", "112400002", "公假", "2025-12-03", "程式競賽", "待審核", "test3@example.com"));
+        // 模擬檔案連結 (這裡用假網址示意，點擊會開新分頁)
+        String demoFileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+        String demoImgUrl = "https://via.placeholder.com/600x400.png?text=Proof+Document";
+
+        // 資料 1: 體育課請假 (兩節課)
+        List<StudentLeaveForm.ScheduleItem> schedule1 = new ArrayList<>();
+        schedule1.add(new StudentLeaveForm.ScheduleItem("2025-11-25", "星期二", "5", "PE2071 排球入門", "陳政達"));
+        schedule1.add(new StudentLeaveForm.ScheduleItem("2025-11-25", "星期二", "6", "PE2071 排球入門", "陳政達"));
+
+        leaveDb.add(new StudentLeaveForm("L001", "周佳穎", "112403508", "事假", "家裡有事需返鄉", "待審核", "test1@example.com", 
+                schedule1, null, demoFileUrl)); // 證明文件無，但導師同意書有(必填)
+
+        // 資料 2: 微積分請假 (一節課)
+        List<StudentLeaveForm.ScheduleItem> schedule2 = new ArrayList<>();
+        schedule2.add(new StudentLeaveForm.ScheduleItem("2025-12-02", "星期二", "3", "IM1001 微積分", "林數學"));
+
+        leaveDb.add(new StudentLeaveForm("L002", "王小明", "112400001", "病假", "感冒發燒", "待審核", "test2@example.com", 
+                schedule2, demoImgUrl, demoFileUrl)); // 都有附檔案
+        
+        // 資料 3: 公假
+        List<StudentLeaveForm.ScheduleItem> schedule3 = new ArrayList<>();
+        schedule3.add(new StudentLeaveForm.ScheduleItem("2025-12-03", "星期三", "1", "CS101 程式設計", "張資工"));
+        
+        leaveDb.add(new StudentLeaveForm("L003", "陳大文", "112400002", "公假", "參加程式競賽", "待審核", "test3@example.com", 
+                schedule3, demoFileUrl, demoFileUrl));
     }
 
 
@@ -61,7 +83,7 @@ public class TeacherAuditController {
     // 新增：查看審核紀錄頁面
     @GetMapping("/audit-logs")
     public String viewAuditLogs(Model model) {
-        model.addAttribute("logs", auditLogs);
+        model.addAttribute("logs", auditRecords);
         return "logs"; // 對應 logs.html
     }
 
@@ -135,7 +157,7 @@ public class TeacherAuditController {
         leave.setStatus(resultStatus);
 
         // 2. 寫入審核紀錄
-        auditLogs.add(0, new AuditRecord(leave.getId(), leave.getStudentName(), logAction, "Teacher")); // 加在最前面
+        auditRecords.add(0, new AuditLog(leave.getId(), leave.getStudentName(), logAction, "Teacher")); // 加在最前面
 
         // 3. 寄送 Email (包含防呆機制)
         sendEmailSafely(leave.getEmail(), subject, body);

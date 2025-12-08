@@ -10,9 +10,6 @@
         .section-title { font-weight: bold; font-size: 1.1em; margin-top: 20px; margin-bottom: 10px; color: #333; border-left: 4px solid #5F9EA0; padding-left: 10px;}
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
         .info-item label { font-weight: bold; color: #555; display: block; font-size: 0.9em;}
-        .schedule-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .schedule-table th { background-color: #D1E9E9; color: #333; padding: 10px; border: 1px solid #ccc; text-align: left;} 
-        .schedule-table td { padding: 10px; border: 1px solid #eee; }
         .file-box { border: 1px solid #ddd; padding: 15px; border-radius: 4px; background-color: #fafafa; display: flex; align-items: center; justify-content: space-between;}
         
         .actions { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;}
@@ -30,13 +27,11 @@
     <script>
         function confirmReject(form) {
             var reason = form.reason.value;
-            // 如果原因欄位是空的 (只有空白也算空)
             if (reason.trim() === "") {
                 alert("⚠️ 駁回申請時，請務必在輸入框填寫駁回原因！");
-                form.reason.focus(); // 幫導師把游標移到輸入框
-                return false; // 阻止表單送出
+                form.reason.focus();
+                return false;
             }
-            // 有填寫原因才跳出確認視窗
             return confirm('確定要「駁回」此假單並寄送通知信嗎？');
         }
     </script>
@@ -54,26 +49,20 @@
             
             <div class="info-item"><label>學生姓名</label><span th:text="${leave.student.studentName}"></span></div>
             <div class="info-item"><label>學號</label><span th:text="${leave.student.studentId}"></span></div>
+            <div class="info-item"><label>系級</label><span th:text="${leave.student.department}"></span></div>
             <div class="info-item"><label>Email</label><span th:text="${leave.student.email}"></span></div>
             
-            <div class="info-item"><label>假別</label><span th:text="${leave.type}"></span></div>
+            <div class="info-item"><label>假別</label><span th:text="${leave.leaveType}"></span></div>
+        </div>
+        
+        <div class="section-title">請假時間</div>
+        <div class="info-grid">
+            <div class="info-item"><label>開始時間</label><span th:text="${leave.startTime}"></span></div>
+            <div class="info-item"><label>結束時間</label><span th:text="${leave.endTime}"></span></div>
         </div>
 
         <div class="section-title">請假事由</div>
         <div style="padding: 10px; background: #eee; border-radius: 4px;" th:text="${leave.reason}"></div>
-
-        <div class="section-title">請假節次</div>
-        <table class="schedule-table">
-            <thead><tr><th>日期</th><th>節次</th><th>課程</th><th>老師</th></tr></thead>
-            <tbody>
-                <tr th:each="item : ${leave.schedule}">
-                    <td th:text="${item.date}"></td>
-                    <td th:text="${item.period}"></td>
-                    <td th:text="${item.course}"></td>
-                    <td th:text="${item.teacher}"></td>
-                </tr>
-            </tbody>
-        </table>
         
         <div class="section-title">證明文件</div>
         <div class="file-box">
@@ -89,7 +78,8 @@
         <div class="actions" th:if="${leave.status == '待審核'}">
             <div class="audit-area">
                 <form th:action="@{/leaves/{id}/audit(id=${leave.id})}" method="post" style="flex: 1;">
-                    <div style="margin-bottom:10px; height: 38px;"></div> <button type="submit" name="action" value="approve" class="approve" 
+                    <div style="margin-bottom:10px; height: 38px;"></div>
+                    <button type="submit" name="action" value="approve" class="approve" 
                             onclick="return confirm('確定要「通過」此假單嗎？(不會寄送通知信)')">
                         通過審核
                     </button>

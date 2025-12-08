@@ -4,73 +4,21 @@
     <title>假單審核列表</title>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; padding: 20px; }
+        /* ... 樣式省略 ... */
         .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
         .logout-btn { background-color: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
-        .logout-btn:hover { background-color: #5a6268; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
         th { background-color: #f2f2f2; }
         .status-通過 { color: green; font-weight: bold; }
         .status-不通過 { color: red; font-weight: bold; }
         .status-待審核 { color: orange; font-weight: bold; }
-        
-        .btn { padding: 5px 10px; border-radius: 4px; cursor: pointer; border: none; color: white; margin-right: 5px;}
-        .btn-blue { background: #007bff; text-decoration: none; display: inline-block;}
-        .btn-green { background: #28a745; }
-        .btn-red { background: #dc3545; }
-        .btn-info { background: #17a2b8; }
-        .toolbar { margin-bottom: 15px; background: #f8f9fa; padding: 15px; border-radius: 5px;}
+        .btn-blue { background: #007bff; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none;}
     </style>
-    
     <script th:inline="javascript">
-        /* 1. 顯示後端傳來的成功訊息 */
-        // 這種寫法 VS Code 會以為是註解 (不報錯)，但 Thymeleaf 執行時會真的把值填進去
         var successMessage = /*[[${message}]]*/ null;
-        var errorMessage = /*[[${error}]]*/ null;
-        
         window.onload = function() {
-            if (successMessage) {
-                alert("✅ " + successMessage);
-            }
-            if (errorMessage) {
-                alert("⚠️ " + errorMessage);
-            }
-        }
-
-        /* 2. 全選功能 */
-        function toggleAll(source) {
-            checkboxes = document.getElementsByName('ids');
-            for(var i=0, n=checkboxes.length;i<n;i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
-
-        /* 3. 按鈕操作攔截 (驗證 + 雙重確認) */
-        function handleBatchAction(actionType) {
-            // 檢查勾選數量
-            var checkboxes = document.getElementsByName('ids');
-            var checkedCount = 0;
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    checkedCount++;
-                }
-            }
-
-            // 驗證 1: 未勾選
-            if (checkedCount === 0) {
-                alert("⚠️ 請至少勾選一筆假單！");
-                return false; // 阻止表單送出
-            }
-
-            // 驗證 2: 雙重確認
-            if (actionType === 'approve') {
-                return confirm("您選取了 " + checkedCount + " 筆資料。\n\n確定要「全部通過」並寄送通知信嗎？");
-            } else if (actionType === 'reject') {
-                return confirm("您選取了 " + checkedCount + " 筆資料。\n\n確定要「全部不通過」並寄送通知信嗎？");
-            }
-
-            // 如果是 review (檢視)，只要有勾選就可以直接過，不用 confirm
-            return true;
+            if (successMessage) alert("✅ " + successMessage);
         }
     </script>
 </head>
@@ -79,57 +27,37 @@
         <h2>待審核假單列表</h2>
         <div>
             <span>你好，導師 Teacher</span>
-            <a href="/audit-logs" class="btn btn-blue" style="margin: 0 10px;">查看審核紀錄</a>
+            <a href="/audit-logs" class="btn-blue" style="margin: 0 10px;">查看審核紀錄</a>
             <a href="/logout" class="logout-btn">登出</a>
         </div>
     </div>
     
-    <form action="/leaves/batch" method="post">
-        <div class="toolbar">
-            <span style="font-weight:bold; margin-right: 10px;">批次操作:</span>
-            
-            <button type="submit" name="action" value="review" class="btn btn-info" 
-                    onclick="return handleBatchAction('review')">🔍 檢視選取假單並審核</button>
-            
-            <span style="border-left: 2px solid #ccc; margin: 0 10px;"></span>
-            
-            <button type="submit" name="action" value="approve" class="btn btn-green" 
-                    onclick="return handleBatchAction('approve')">全部通過</button>
-            
-            <button type="submit" name="action" value="reject" class="btn btn-red" 
-                    onclick="return handleBatchAction('reject')">全部不通過</button>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>
-                        <input type="checkbox" onclick="toggleAll(this)"> 全選
-                    </th>
-                    <th>單號</th>
-                    <th>學號</th>
-                    <th>姓名</th>
-                    <th>假別</th>
-                    <th>日期</th> <th>狀態</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="leave : ${leaves}">
-                    <td>
-                        <input type="checkbox" name="ids" th:value="${leave.id}" th:if="${leave.status == '待審核'}">
-                    </td>
-                    <td th:text="${leave.id}"></td>
-                    <td th:text="${leave.studentId}"></td>
-                    <td th:text="${leave.studentName}"></td>
-                    <td th:text="${leave.type}"></td>
-                    <td th:text="${leave.dateSummary}"></td> <td th:class="'status-' + ${leave.status}" th:text="${leave.status}"></td>
-                    <td>
-                        <a th:href="@{/leaves/{id}(id=${leave.id})}" class="btn btn-blue">詳細</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>單號</th>
+                <th>學號</th>
+                <th>姓名</th>
+                <th>假別</th>
+                <th>日期</th>
+                <th>狀態</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="leave : ${leaves}">
+                <td th:text="${leave.id}"></td>
+                <td th:text="${leave.student.studentId}"></td>
+                <td th:text="${leave.student.studentName}"></td>
+                
+                <td th:text="${leave.type}"></td>
+                <td th:text="${leave.dateSummary}"></td>
+                <td th:class="'status-' + ${leave.status}" th:text="${leave.status}"></td>
+                <td>
+                    <a th:href="@{/leaves/{id}(id=${leave.id})}" class="btn btn-blue">詳細與審核</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

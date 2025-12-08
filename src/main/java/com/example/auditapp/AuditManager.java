@@ -21,7 +21,7 @@ public class AuditManager {
     private static List<LeaveForm> leaveDb = new ArrayList<>();
     private static List<AuditRecord> auditRecords = new ArrayList<>();
 
-    private static Teacher currentTeacher = new Teacher("T999", "陳導師", "your-email@gmail.com");
+    private static Teacher currentTeacher = new Teacher("T999", "陳導師", "yourgmail@gmail.com");
     private static Student demoStudent = new Student("112403508", "周佳穎", "student@example.com");
 
     // 初始化假資料

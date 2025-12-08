@@ -46,7 +46,7 @@ cd LeaveAuditSystem
 4.  點擊程式碼上方的 **Run** 按鈕。
 5.  等待終端機出現 `Tomcat started on port 8080` 字樣。
 
-系統啟動後，請開啟瀏覽器訪問： http://localhost:8080
+系統啟動後，請開啟瀏覽器訪問： http://localhost:8080/demo
 
 #### 1\. 登入系統
 

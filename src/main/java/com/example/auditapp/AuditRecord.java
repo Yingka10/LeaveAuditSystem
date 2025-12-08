@@ -3,19 +3,23 @@ package com.example.auditapp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class AuditLog {
+public class AuditRecord {
     private String leaveId;
     private String studentName;
-    private String action; // "核准" 或 "駁回"
-    private String operator; // 操作者 (Teacher)
+    private String action; 
+    
+    // --- 修改重點：改名為 rejectedReason ---
+    private String rejectedReason; 
+    
+    private String operator;
     private String timestamp;
 
-    public AuditLog(String leaveId, String studentName, String action, String operator) {
+    public AuditRecord(String leaveId, String studentName, String action, String rejectedReason, String operator) {
         this.leaveId = leaveId;
         this.studentName = studentName;
         this.action = action;
+        this.rejectedReason = rejectedReason;
         this.operator = operator;
-        // 自動抓取現在時間
         this.timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
@@ -23,6 +27,10 @@ public class AuditLog {
     public String getLeaveId() { return leaveId; }
     public String getStudentName() { return studentName; }
     public String getAction() { return action; }
+    
+    // --- Getter 也要改名 ---
+    public String getRejectedReason() { return rejectedReason; }
+    
     public String getOperator() { return operator; }
     public String getTimestamp() { return timestamp; }
 }

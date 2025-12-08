@@ -2,31 +2,25 @@ package com.example.auditapp;
 
 import java.util.List;
 
-public class StudentLeaveForm {
+public class LeaveForm { 
     private String id;
-    private String studentName;
-    private String studentId;
-    private String type; 
+    
+    private Student student; 
+    
+    private String studentId; 
+    private String type;
     private String reason; 
     private String status;
-    private String email;
-    
-    // 請假節次清單
     private List<ScheduleItem> schedule;
-    
-    // 證明文件 (選填)
-    private String evidenceFile; 
-    
-    // 已預先向任課教師請假證明 (必填)
+    private String evidenceFile;
     private String teacherConsentFile;
 
-    // --- 內部類別：定義每一節課的結構 ---
     public static class ScheduleItem {
-        public String date;    
-        public String day;     
-        public String period;  
-        public String course;  
-        public String teacher; 
+        public String date;
+        public String day;
+        public String period;
+        public String course;
+        public String teacher;
 
         public ScheduleItem(String date, String day, String period, String course, String teacher) {
             this.date = date;
@@ -37,33 +31,35 @@ public class StudentLeaveForm {
         }
     }
 
-    public StudentLeaveForm(String id, String studentName, String studentId, String type, 
-                          String reason, String status, String email, 
+    public LeaveForm(String id, Student student, String type, 
+                          String reason, String status, 
                           List<ScheduleItem> schedule, String evidenceFile, String teacherConsentFile) {
         this.id = id;
-        this.studentName = studentName;
-        this.studentId = studentId;
+        this.student = student;
+        this.studentId = student.getStudentId(); 
         this.type = type;
         this.reason = reason;
         this.status = status;
-        this.email = email;
         this.schedule = schedule;
         this.evidenceFile = evidenceFile;
         this.teacherConsentFile = teacherConsentFile;
     }
 
-    // --- Getters and Setters ---
+    // Getters
     public String getId() { return id; }
-    public String getStudentName() { return studentName; }
+    
+
+    public Student getStudent() { return student; }
+    
     public String getStudentId() { return studentId; }
     public String getType() { return type; }
     public String getReason() { return reason; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public String getEmail() { return email; }
     public List<ScheduleItem> getSchedule() { return schedule; }
     public String getEvidenceFile() { return evidenceFile; }
     public String getTeacherConsentFile() { return teacherConsentFile; }
+    
     public String getDateSummary() {
         if (schedule != null && !schedule.isEmpty()) {
             return schedule.get(0).date + " (" + schedule.size() + "節)";

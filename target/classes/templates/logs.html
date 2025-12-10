@@ -36,9 +36,9 @@
                     th:style="${log.action == '核准' ? 'color:green;font-weight:bold;' : 'color:red;font-weight:bold;'}">
                 </td>
                 
-                <td th:text="${log.rejectedReason}"></td>
+                <td th:text="${log.rejectReason}"></td>
                 
-                <td th:text="${log.operator}"></td>
+                <td th:text="${log.advisorId}"></td>
             </tr>
         </tbody>
     </table>

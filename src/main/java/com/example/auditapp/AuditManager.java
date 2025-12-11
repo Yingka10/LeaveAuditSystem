@@ -1,6 +1,5 @@
 package com.example.auditapp;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -118,15 +117,15 @@ public class AuditManager {
         return "list";
     }
     
-    @GetMapping("/leaves/{id}") public String leaveDetail(@PathVariable String id, HttpSession session, Model model) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
+    @GetMapping("/leaves/{id}") 
+    public String leaveDetail(@PathVariable String id, Model model) {      
         LeaveForm leave = pendingList.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
         model.addAttribute("leave", leave);
         return "detail";
     }
     
-    @GetMapping("/audit-logs") public String viewAuditLogs(HttpSession session, Model model) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
+    @GetMapping("/audit-logs") 
+    public String viewAuditLogs(Model model) {
         model.addAttribute("logs", auditRecords);
         return "logs";
     }
@@ -135,9 +134,7 @@ public class AuditManager {
     public String auditSingle(@PathVariable String id, 
                               @RequestParam String action,
                               @RequestParam(required = false) String reason,
-                              HttpSession session,
                               RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
 
         LeaveForm leave = pendingList.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
         

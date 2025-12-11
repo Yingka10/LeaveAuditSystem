@@ -11,14 +11,9 @@ public class Teacher {
         this.email = email;
     }
 
-
     public String getTeacherId() { return teacherId; }
     public String getTeacherName() { return teacherName; }
-    public String getEmail() { return email; }
+    public String getEmail() { return email; 
 
-
-    public void receiveNotification(String subject) {
-        System.out.println("【模擬】導師 " + this.teacherName + " (" + this.email + ") 已收到 Email 通知：[" + subject + "]");
-        System.out.println(" -> 導師點擊信中連結，準備進入系統...");
     }
 }

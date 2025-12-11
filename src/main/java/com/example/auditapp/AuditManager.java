@@ -1,6 +1,5 @@
 package com.example.auditapp;
 
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -18,11 +17,11 @@ public class AuditManager {
     @Autowired(required = false)
     private JavaMailSender mailSender;
 
-    private static List<LeaveForm> leaveDb = new ArrayList<>();
+    private static List<LeaveForm> pendingList = new ArrayList<>();
     private static List<AuditRecord> auditRecords = new ArrayList<>();
 
-    private static Teacher currentTeacher = new Teacher("T999", "陳導師", "your-email@gmail.com");
-    private static Student demoStudent = new Student("112403508", "周佳穎", "資管系", "student@example.com"); // 加入系所
+    private static Teacher currentTeacher = new Teacher("T999", "陳導師", "jennychou0710@gmail.com");
+    private static Student demoStudent = new Student("112403508", "周佳穎", "資管系", "jennychou0710@gmail.com");
 
     // 初始化假資料
     static {
@@ -32,8 +31,8 @@ public class AuditManager {
         String demoFileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
         String demoImgUrl = "https://via.placeholder.com/600x400.png?text=Proof+Document";
 
-        leaveDb.add(new LeaveForm("L001", s1, "事假", "需返鄉", "待審核", "2025-11-25 13:00", "2025-11-25 15:00", null, demoFileUrl));
-        leaveDb.add(new LeaveForm("L002", s2, "病假", "發燒", "待審核", "2025-12-02 09:00", "2025-12-02 12:00", demoImgUrl, demoFileUrl));
+        pendingList.add(new LeaveForm("L001", s1, "事假", "需返鄉", "待審核", "2025-11-25 13:00", "2025-11-25 15:00", null, demoFileUrl));
+        pendingList.add(new LeaveForm("L002", s2, "病假", "發燒", "待審核", "2025-12-02 09:00", "2025-12-02 12:00", demoImgUrl, demoFileUrl));
     }
 
     // --- 演示觸發區 ---
@@ -54,7 +53,7 @@ public class AuditManager {
             "https://example.com/consent.pdf"
         );
 
-        demoStudent.submitLeave(newLeave, leaveDb);
+        demoStudent.submitLeave(newLeave, pendingList);
 
         String subject = "【系統通知】您有一筆新的請假審核申請";
         String text = "親愛的 " + currentTeacher.getTeacherName() + " 您好：\n\n" +
@@ -62,40 +61,71 @@ public class AuditManager {
                       "請點擊下方連結進入系統進行審核：\nhttp://localhost:8080/";
         
         sendEmailSafely(currentTeacher.getEmail(), subject, text);
-        currentTeacher.receiveNotification(subject);
 
         redirectAttributes.addFlashAttribute("message", "模擬成功！學生 (" + demoStudent.getDepartment() + ") 已提交假單。");
         return "redirect:/demo";
     }
 
-    // --- 系統業務流程 ---
-    @GetMapping("/") public String loginPage() { return "login"; }
-    @PostMapping("/login") public String doLogin(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
-        if ("teacher".equals(username) && "1234".equals(password)) {
-            session.setAttribute("loggedInUser", currentTeacher.getTeacherName());
-            return "redirect:/leaves";
+    @PostMapping("/demo/resubmit")
+    public String simulateStudentResubmit(RedirectAttributes redirectAttributes) {
+        // 1. 找出被駁回的那張假單 (模擬學生去系統裡找自己的單)
+        LeaveForm rejectedLeave = pendingList.stream()
+                .filter(l -> "不通過".equals(l.getStatus()))
+                .findFirst()
+                .orElse(null);
+
+        if (rejectedLeave == null) {
+            redirectAttributes.addFlashAttribute("message", "❌ 目前沒有「不通過」的假單可以重送，請先去駁回一張！");
+            return "redirect:/demo";
         }
-        model.addAttribute("error", "帳號或密碼錯誤");
-        return "login";
+
+        // 2. 模擬學生修正資料 (例如：補上了證明文件，改了原因)
+        String newReason = rejectedLeave.getReason() + " (已補件)";
+        String newEvidence = "https://example.com/new_proof.pdf"; // 模擬新的證明
+        String newConsent = "https://example.com/new_consent.pdf"; // 模擬新的同意書
+
+        // 3. 呼叫 Student 的 modifyLeave (這會連帶將狀態改回 "待審核")
+        demoStudent.modifyLeave(rejectedLeave, 
+                                rejectedLeave.getLeaveType(), 
+                                newReason, 
+                                rejectedLeave.getStartTime(), 
+                                rejectedLeave.getEndTime(),
+                                newEvidence,
+                                newConsent);
+
+        // 4. 寄信通知導師 (模擬系統自動通知)
+        String subject = "【系統通知】學生已重新提交假單 (" + rejectedLeave.getId() + ")";
+        String text = "導師您好，學生 " + demoStudent.getStudentName() + " 已修正並重送假單，請再次審核。\n"+
+        "請點擊下方連結進入系統進行審核：\nhttp://localhost:8080/";
+
+        sendEmailSafely(currentTeacher.getEmail(), subject, text);
+
+        redirectAttributes.addFlashAttribute("message", "✅ 模擬成功！學生已修正假單 " + rejectedLeave.getId() + " 並重送，請導師重新審核。");
+        return "redirect:/demo";
     }
-    @GetMapping("/logout") public String logout(HttpSession session) { session.invalidate(); return "redirect:/"; }
-    
+
+    // --- 系統業務流程 ---
+    @GetMapping("/") 
+    public String rootPage() { 
+        return "redirect:/leaves"; 
+    }
+
     @GetMapping("/leaves") 
-    public String listLeaves(HttpSession session, Model model) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
-        model.addAttribute("leaves", leaveDb);
+    public String listLeaves(Model model) {
+        // 不再檢查 session
+        model.addAttribute("leaves", pendingList);
         return "list";
     }
     
-    @GetMapping("/leaves/{id}") public String leaveDetail(@PathVariable String id, HttpSession session, Model model) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
-        LeaveForm leave = leaveDb.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
+    @GetMapping("/leaves/{id}") 
+    public String leaveDetail(@PathVariable String id, Model model) {      
+        LeaveForm leave = pendingList.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
         model.addAttribute("leave", leave);
         return "detail";
     }
     
-    @GetMapping("/audit-logs") public String viewAuditLogs(HttpSession session, Model model) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
+    @GetMapping("/audit-logs") 
+    public String viewAuditLogs(Model model) {
         model.addAttribute("logs", auditRecords);
         return "logs";
     }
@@ -104,11 +134,9 @@ public class AuditManager {
     public String auditSingle(@PathVariable String id, 
                               @RequestParam String action,
                               @RequestParam(required = false) String reason,
-                              HttpSession session,
                               RedirectAttributes redirectAttributes) {
-        if (session.getAttribute("loggedInUser") == null) return "redirect:/";
 
-        LeaveForm leave = leaveDb.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
+        LeaveForm leave = pendingList.stream().filter(l -> l.getId().equals(id)).findFirst().orElse(null);
         
         if (leave != null) {
             processAudit(leave, action, reason);
@@ -147,20 +175,27 @@ public class AuditManager {
     }
 
     private void sendEmailSafely(String to, String subject, String text) {
-        try {
-            if (mailSender != null) {
-                SimpleMailMessage message = new SimpleMailMessage();
-                message.setTo(to);
-                message.setSubject(subject);
-                message.setText(text);
-                message.setFrom("your-email@gmail.com"); 
-                mailSender.send(message);
-                System.out.println("Email Sent to: " + to);
-            } else {
-                System.out.println(">> 模擬寄信: To " + to);
+            try {
+                // 為了 Demo 效果，我們把「導師收到信」的模擬訊息印在這裡，或是 Controller 呼叫完之後
+                System.out.println("------------------------------------------------------");
+                System.out.println("【系統動作】已發送 Email 至: " + to);
+                if (mailSender != null) {
+                    SimpleMailMessage message = new SimpleMailMessage();
+                    message.setTo(to);
+                    message.setSubject(subject);
+                    message.setText(text);
+                    message.setFrom("your-email@gmail.com"); 
+                    mailSender.send(message);
+                    System.out.println(" -> (真實郵件已寄出)");
+                } else {
+                    System.out.println(" -> (模擬模式：未設定 SMTP，僅顯示 Log)");
+                }
+                // 這裡模擬導師看到的視角 (原本在 Teacher.java 的內容移到這)
+                System.out.println(" -> [模擬情境] 導師/學生 手機震動，收到標題為 [" + subject + "] 的通知");
+                System.out.println("------------------------------------------------------");
+                
+            } catch (Exception e) {
+                System.err.println("Email Failed: " + e.getMessage());
             }
-        } catch (Exception e) {
-            System.err.println("Email Failed: " + e.getMessage());
-        }
     }
 }

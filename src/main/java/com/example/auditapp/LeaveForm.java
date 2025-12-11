@@ -31,22 +31,30 @@ public class LeaveForm {
         this.teacherConsentFile = teacherConsentFile;
     }
 
-    // Getters
+    public void renewInfo(String leaveType, String reason, String startTime, String endTime, String evidenceFile, String teacherConsentFile) {
+        this.leaveType = leaveType;
+        this.reason = reason;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        
+        this.evidenceFile = evidenceFile;
+        this.teacherConsentFile = teacherConsentFile;
+
+        this.status = "待審核"; 
+        System.out.println("假單 " + this.id + " 內容已更新，狀態重置為待審核。");
+    }
+
     public String getId() { return id; }
     public Student getStudent() { return student; }
     public String getStudentId() { return studentId; }
-    
     public String getLeaveType() { return leaveType; }
     public String getReason() { return reason; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    
     public String getStartTime() { return startTime; }
     public String getEndTime() { return endTime; }
-    
     public String getEvidenceFile() { return evidenceFile; }
     public String getTeacherConsentFile() { return teacherConsentFile; }
-    
     public String getDateSummary() {
         return startTime + " 至 " + endTime;
     }

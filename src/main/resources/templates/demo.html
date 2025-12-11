@@ -20,11 +20,19 @@
         <form action="/demo/trigger" method="post">
             <button type="submit">🚀 模擬學生提交假單</button>
         </form>
-
+        <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px;">
+            <p>情境二：導師駁回後...</p>
+            <form action="/demo/resubmit" method="post">
+                <button type="submit" style="background-color: #28a745;">🔄 模擬學生修正並重送</button>
+            </form>
+            <p style="font-size: 12px; color: #666;">(請先執行「駁回」操作，再點此按鈕)</p>
+        </div>
         <div th:if="${message}" class="msg" th:text="${message}"></div>
         
         <br>
         <a href="/" style="color:#999; font-size:12px;">直接前往登入頁</a>
+
     </div>
+
 </body>
 </html>

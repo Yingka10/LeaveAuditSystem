@@ -16,7 +16,6 @@ public class AuditRecord {
     public AuditRecord(String leaveId, String studentName, String result, String rejectReason, String advisorId) {
         this.leaveId = leaveId;
         this.studentName = studentName;
-        this.action = result;  // 將 result 賦值給 action
         this.result = result;
         this.rejectReason = rejectReason;
         this.advisorId = advisorId;
@@ -25,13 +24,9 @@ public class AuditRecord {
 
     // Getters 更新
     public String getLeaveId() { return leaveId; }
-    public String getAction() { return action; }
     public String getStudentName() { return studentName; }
     public String getResult() { return result; }         
     public String getRejectReason() { return rejectReason; } 
     public String getAdvisorId() { return advisorId; }   
     public String getTimestamp() { return timestamp; }
-    public void setAction(String action) {
-        this.action = action;
-    }
 }

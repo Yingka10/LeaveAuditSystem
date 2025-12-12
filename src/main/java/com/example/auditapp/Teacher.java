@@ -11,7 +11,15 @@ public class Teacher {
         this.email = email;
     }
 
-    public String getTeacherId() { return teacherId; }
-    public String getTeacherName() { return teacherName; }
-    public String getEmail() { return email; }
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

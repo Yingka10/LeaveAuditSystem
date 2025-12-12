@@ -24,4 +24,14 @@ public class Student {
         database.add(leave);
         System.out.println("學生 " + this.studentName + " (" + this.department + ") 已提交假單：" + leave.getId());
     }
+
+    public void modifyLeave(LeaveForm leave, String newType, String newReason, String newStart, String newEnd, String newEvidence, String newConsent) {
+        if (leave.getStudentId().equals(this.studentId)) {
+            // 呼叫 LeaveForm 的更新方法
+            leave.renewInfo(newType, newReason, newStart, newEnd, newEvidence, newConsent);
+            System.out.println("學生 " + this.studentName + " 已修正並重送假單 (ID: " + leave.getId() + ")");
+        } else {
+            System.out.println("錯誤：無法修改非本人的假單。");
+        }
+    }
 }

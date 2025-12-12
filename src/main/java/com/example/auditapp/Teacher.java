@@ -13,7 +13,5 @@ public class Teacher {
 
     public String getTeacherId() { return teacherId; }
     public String getTeacherName() { return teacherName; }
-    public String getEmail() { return email; 
-
-    }
+    public String getEmail() { return email; }
 }

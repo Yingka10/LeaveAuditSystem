@@ -1,29 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>假單審核列表</title>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px; }
-        .logout-btn { background-color: #6c757d; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; font-size: 0.9em; }
-        .logout-btn:hover { background-color: #5a6268; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        .status-通過 { color: green; font-weight: bold; }
-        .status-不通過 { color: red; font-weight: bold; }
-        .status-待審核 { color: orange; font-weight: bold; }
-        .btn-blue { background: #007bff; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none;}
-        .btn-blue:hover { background: #0056b3; }
+        body {
+            font-family: "Microsoft JhengHei", sans-serif;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logout-btn {
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        .logout-btn:hover {
+            background-color: #5a6268;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .status-通過 {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-不通過 {
+            color: red;
+            font-weight: bold;
+        }
+
+        .status-待審核 {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .btn-blue {
+            background: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        .btn-blue:hover {
+            background: #0056b3;
+        }
     </style>
-    
+
     <script th:inline="javascript">
         var successMessage = /*[[${message}]]*/ null;
-        window.onload = function() {
+        window.onload = function () {
             if (successMessage) alert("✅ " + successMessage);
         }
     </script>
 </head>
+
 <body>
     <div class="header">
         <h2>待審核假單列表</h2>
@@ -32,30 +92,32 @@
             <a href="/audit-logs" class="btn-blue" style="margin: 0 10px;">查看審核紀錄</a>
         </div>
     </div>
-    
+
     <table>
         <thead>
             <tr>
                 <th>單號</th>
-                <th>系級</th> <th>學號</th>
+                <th>系級</th>
+                <th>學號</th>
                 <th>姓名</th>
                 <th>假別</th>
-                <th>請假時間</th> <th>狀態</th>
+                <th>請假時間</th>
+                <th>狀態</th>
                 <th>操作</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="leave : ${leaves}">
                 <td th:text="${leave.id}"></td>
-                
-                <td th:text="${leave.student.department}"></td> 
+
+                <td th:text="${leave.student.department}"></td>
                 <td th:text="${leave.student.studentId}"></td>
                 <td th:text="${leave.student.studentName}"></td>
-                
+
                 <td th:text="${leave.leaveType}"></td>
-                
+
                 <td th:text="${leave.dateSummary}"></td>
-                
+
                 <td th:class="'status-' + ${leave.status}" th:text="${leave.status}"></td>
                 <td>
                     <a th:href="@{/leaves/{id}(id=${leave.id})}" class="btn-blue">詳細與審核</a>
@@ -64,4 +126,5 @@
         </tbody>
     </table>
 </body>
+
 </html>

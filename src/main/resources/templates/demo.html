@@ -57,16 +57,22 @@
 <body>
     <div class="box">
         <h2>請假審核系統 - 演示模式</h2>
-        <p>點擊下方按鈕以模擬「學生提交假單」<br>系統將自動發送 Email 通知導師。</p>
+        <p>點擊下方按鈕以模擬學生提交假單Use case<br>系統將自動發送 Email 通知導師。</p>
 
         <form action="/demo/trigger" method="post">
-            <button type="submit">🚀 模擬學生提交假單</button>
+            <button type="submit">模擬學生提交假單</button>
         </form>
-
+        <div style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 20px;">
+            <p>導師駁回後：</p>
+            <form action="/demo/resubmit" method="post">
+                <button type="submit" style="background-color: #28a745;">模擬學生修正並重送</button>
+            </form>
+            <p style="font-size: 12px; color: #666;">(請先執行駁回，再點此按鈕)</p>
+        </div>
         <div th:if="${message}" class="msg" th:text="${message}"></div>
 
         <br>
-        <a href="/" style="color:#999; font-size:12px;">直接前往登入頁</a>
+        <a href="/" style="color:#999; font-size:12px;">直接前往審核頁面</a>
     </div>
 </body>
 

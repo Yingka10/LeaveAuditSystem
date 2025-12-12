@@ -187,7 +187,7 @@
                 <form th:action="@{/leaves/{id}/audit(id=${leave.id})}" method="post" style="flex: 1;">
                     <div style="margin-bottom:10px; height: 38px;"></div>
                     <button type="submit" name="action" value="approve" class="approve"
-                        onclick="return confirm('確定要「通過」此假單嗎？(不會寄送通知信)')">
+                        onclick="return confirm('確定要「通過」此假單嗎？')">
                         通過審核
                     </button>
                 </form>

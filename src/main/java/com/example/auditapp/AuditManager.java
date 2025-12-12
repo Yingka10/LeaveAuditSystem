@@ -23,10 +23,9 @@ public class AuditManager {
     private static Teacher currentTeacher = new Teacher("T999", "陳導師", "jennychou0710@gmail.com");
     private static Student demoStudent = new Student("112403508", "周佳穎", "資管系", "jennychou0710@gmail.com");
 
-    // 初始化假資料
     static {
-        Student s1 = new Student("112403508", "周佳穎", "資管系", "test1@example.com");
-        Student s2 = new Student("112400001", "王小明", "資工系", "test2@example.com");
+        Student s1 = new Student("112400001", "王大明", "資管系", "test1@example.com");
+        Student s2 = new Student("112400002", "王小明", "資工系", "test2@example.com");
 
         String demoFileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
         String demoImgUrl = "https://via.placeholder.com/600x400.png?text=Proof+Document";
@@ -35,14 +34,16 @@ public class AuditManager {
         pendingList.add(new LeaveForm("L002", s2, "病假", "發燒", "待審核", "2025-12-02 09:00", "2025-12-02 12:00", demoImgUrl, demoFileUrl));
     }
 
-    // --- 演示觸發區 ---
+    // demo區
     @GetMapping("/demo")
     public String demoStartPage() { return "demo"; }
 
     @PostMapping("/demo/trigger")
     public String triggerStudentSubmission(RedirectAttributes redirectAttributes) {
+        int nextNum = pendingList.size() + 1;
+        String newId = "L" + String.format("%03d", nextNum);
         LeaveForm newLeave = new LeaveForm(
-            "L" + System.currentTimeMillis(),
+            newId,
             demoStudent,
             "事假",
             "家中急事需請假",
@@ -62,7 +63,7 @@ public class AuditManager {
         
         sendEmailSafely(currentTeacher.getEmail(), subject, text);
 
-        redirectAttributes.addFlashAttribute("message", "模擬成功！學生 (" + demoStudent.getDepartment() + ") 已提交假單。");
+        redirectAttributes.addFlashAttribute("message", "模擬成功，學生 " + demoStudent.getStudentName() + "(" + demoStudent.getDepartment() + ") 已提交假單。");
         return "redirect:/demo";
     }
 
@@ -75,7 +76,7 @@ public class AuditManager {
                 .orElse(null);
 
         if (rejectedLeave == null) {
-            redirectAttributes.addFlashAttribute("message", "❌ 目前沒有「不通過」的假單可以重送，請先去駁回一張！");
+            redirectAttributes.addFlashAttribute("message", "目前沒有「不通過」的假單可以重送，請先去駁回一張");
             return "redirect:/demo";
         }
 
@@ -100,7 +101,7 @@ public class AuditManager {
 
         sendEmailSafely(currentTeacher.getEmail(), subject, text);
 
-        redirectAttributes.addFlashAttribute("message", "✅ 模擬成功！學生已修正假單 " + rejectedLeave.getId() + " 並重送，請導師重新審核。");
+        redirectAttributes.addFlashAttribute("message", "模擬成功，學生已修正假單 " + rejectedLeave.getId() + " 並重送，請導師重新審核。");
         return "redirect:/demo";
     }
 

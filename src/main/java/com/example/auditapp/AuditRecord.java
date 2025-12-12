@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class AuditRecord {
     private String leaveId;
-    private String action;
     private String result;        
     private String rejectReason;  
     private String advisorId;     

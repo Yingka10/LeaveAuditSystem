@@ -25,17 +25,31 @@ public class AuditManager {
 
     //這邊使用假資料模擬
     static {
-        studentList.add(demoStudent);
-        studentList.add(new Student("112400001", "王大明", "資管系", "test1@example.com"));
-        studentList.add(new Student("112400002", "王小明", "資工系", "test2@example.com"));
+        Student s1 = new Student("112400001", "王大明", "資管系", "test1@example.com");
+        Student s2 = new Student("112400002", "王小明", "資工系", "test2@example.com");
 
         String demoFileUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
         String demoImgUrl = "https://via.placeholder.com/600x400.png?text=Proof+Document";
 
-        pendingList.add(
-                new LeaveForm("L001", "112400001", "事假", "需返鄉", "待審核", "2025-11-25 13:00", "2025-11-25 15:00", null,
-                        demoFileUrl));
-        pendingList.add(new LeaveForm("L002", "112400002", "病假", "發燒", "待審核", "2025-12-02 09:00", "2025-12-02 12:00",
+        pendingList.add(new LeaveForm(
+                "L001",
+                s1,
+                "事假",
+                "需返鄉",
+                "待審核",
+                "2025-11-25 13:00",
+                "2025-11-25 15:00",
+                null,
+                demoFileUrl));
+
+        pendingList.add(new LeaveForm(
+                "L002",
+                s2,
+                "病假",
+                "發燒",
+                "待審核",
+                "2025-12-02 09:00",
+                "2025-12-02 12:00",
                 demoImgUrl,
                 demoFileUrl));
     }
@@ -51,7 +65,7 @@ public class AuditManager {
         String newId = "L" + String.format("%03d", nextNum);
         LeaveForm newLeave = new LeaveForm(
                 newId,
-                demoStudent.getStudentId(),
+                demoStudent,
                 "事假",
                 "家中急事需請假",
                 "待審核",

@@ -3,7 +3,6 @@ package com.example.auditapp;
 public class LeaveForm { 
     private String id;
     private Student student; 
-    private String studentId; 
     
     private String leaveType;
     private String reason;
@@ -21,7 +20,6 @@ public class LeaveForm {
                           String evidenceFile, String teacherConsentFile) {
         this.id = id;
         this.student = student;
-        this.studentId = student.getStudentId();
         this.leaveType = leaveType;
         this.reason = reason;
         this.status = status;
@@ -46,7 +44,6 @@ public class LeaveForm {
 
     public String getId() { return id; }
     public Student getStudent() { return student; }
-    public String getStudentId() { return studentId; }
     public String getLeaveType() { return leaveType; }
     public String getReason() { return reason; }
     public String getStatus() { return status; }

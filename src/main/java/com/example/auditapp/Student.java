@@ -26,7 +26,7 @@ public class Student {
     }
 
     public void modifyLeave(LeaveForm leave, String newType, String newReason, String newStart, String newEnd, String newEvidence, String newConsent) {
-        if (leave.getStudentId().equals(this.studentId)) {
+        if (leave.getStudent().getStudentId().equals(this.studentId)) {
             // 呼叫 LeaveForm 的更新方法
             leave.renewInfo(newType, newReason, newStart, newEnd, newEvidence, newConsent);
             System.out.println("學生 " + this.studentName + " 已修正並重送假單 (ID: " + leave.getId() + ")");

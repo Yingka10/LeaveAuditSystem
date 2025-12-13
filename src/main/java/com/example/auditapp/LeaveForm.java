@@ -1,9 +1,8 @@
 package com.example.auditapp;
 
 public class LeaveForm {
-    
     private String id;
-    private String studentId;
+    private Student student; 
     private String leaveType;
     private String reason;
     private String status;
@@ -12,12 +11,12 @@ public class LeaveForm {
     private String evidenceFile;
     private String teacherConsentFile;
 
-    public LeaveForm(String id, String studentId, String leaveType,
+    public LeaveForm(String id, Student student, String leaveType,
             String reason, String status,
             String startTime, String endTime,
             String evidenceFile, String teacherConsentFile) {
         this.id = id;
-        this.studentId = studentId;
+        this.student = student;
         this.leaveType = leaveType;
         this.reason = reason;
         this.status = status;
@@ -45,8 +44,8 @@ public class LeaveForm {
         return id;
     }
 
-    public String getStudentId() {
-        return studentId;
+    public Student getStudent() {
+        return student;
     }
 
     public String getLeaveType() {
@@ -83,10 +82,5 @@ public class LeaveForm {
 
     public String getDateSummary() {
         return startTime + " 至 " + endTime;
-    }
-
-    //根據student的id跟auditmanager取得student的資料
-    public Student getStudent() {
-        return AuditManager.getStudentById(this.studentId);
     }
 }
